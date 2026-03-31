@@ -104,27 +104,35 @@
       <h2 id="abstract">Abstract</h2>
 
       <p>
-        <!-- TODO -->
         <strong>Motivation:</strong>
-        One or two sentences on the motivation behind the problem you are
-        solving.
+        The objective of this project is to create a model router for financial
+        text (specifically sentiment analysis) in order to balance tradeoffs in
+        accuracy and computational/monetary efficiency between small and larger
+        language models (LMs).
       </p>
       <p>
-        <!-- TODO -->
         <strong>Approach:</strong>
-        One or two sentences describing the approach you took.
+        To accomplish this, we have cleaned a dataset (<a
+          href="https://huggingface.co/datasets/takala/financial_phrasebank/tree/main/data"
+          >Financial PhraseBank from Hugging Face</a
+        >), extracted linguistic features from each sample, and have finetuned a
+        "small" LM (DistilBERT). Next, we will perform an error analysis on the
+        small LM and finetune the large model. Finally, we will train a
+        classifier (the model router) to label a sample as either best suited
+        for the small model or the large model.
       </p>
       <p>
-        <!-- TODO -->
+        <!-- TODO: please review :) -->
         <strong>Preliminary Results:</strong>
-        One or two sentences on the main result you obtained.
+        Thus far, we have found that the small model is performing well at the
+        task of classifying the Financial PhraseBank dataset. Additionally, the
+        text in the dataset has relatively low complexity scores. This project
+        would benefit highly from additional, more complex samples.
       </p>
 
       <hr />
 
-      <!-- TODO: Is this necessary? -->
-
-      <h2 id="teaser">Teaser Figure</h2>
+      <h2 id="teaser">Model Router Flow Chart</h2>
 
       <p>
         A figure that conveys the main idea behind the project or the main
@@ -132,10 +140,11 @@
         <a href="https://arxiv.org/pdf/2210.07469">StyLEx</a>.
       </p>
 
-      <p class="sys-img"><img src="./files/teaser.png" alt="imgname" /></p>
+      <p class="sys-img">
+        <img src="./img/flowchart.png" alt="Flowchart of model router system" />
+      </p>
 
-      <h3 id="the-timeline-and-the-highlights">Any subsection</h3>
-
+      <!-- TODO -->
       <p>If you need to explain more about your figure</p>
 
       <hr />
@@ -205,8 +214,6 @@
       <hr />
 
       <h2 id="approach">Approach</h2>
-      <!-- TODO: complete approach -->
-
       <p>
         <b
           >What did you do exactly? How did you solve the problem? Why did you
@@ -218,7 +225,7 @@
         Our system was built in various stages as reflected in the list below.
       </p>
 
-      <h3>Phase 1 (Dataset Preparation & Exploration):</h3>
+      <h3>Phase 1: Dataset Preparation & Exploration</h3>
       <ul>
         <li>
           Clean and pre-process data (<a
@@ -235,25 +242,32 @@
           Generate training, testing, and validation data split (70/15/15)
         </li>
       </ul>
-      <h3>Phase 2 (Linguistic Feature Extraction):</h3>
+      <h3>Phase 2: Linguistic Feature Extraction</h3>
       <ul>
-        <li>xyz</li>
+        <li>
+          The linguistic features extracted for each samples were token count,
+          character count, average word length, syntactic dependency tree depth,
+          clause count, count of negation tokens, count of hedging terms, named
+          entity count, entity density, num_financial_terms, readability score
+          (Flesch reading ease from textstat), reading grade level (Flesch
+          Kincaid grade from textstat), and passive voice count.
+        </li>
       </ul>
-      <h3>Phase 3 (Small Model Finetuning):</h3>
+      <h3>Phase 3: Small Model Finetuning</h3>
       <ul>
-        <li>xyz</li>
+        <li>TODO</li>
       </ul>
-      <h3>Phase 4 (Large Model Finetuning):</h3>
+      <h3>Phase 4: Large Model Finetuning</h3>
       <ul>
-        <li>xyz</li>
+        <li>TODO</li>
       </ul>
-      <h3>Phase 5 (Small Model Error Analysis):</h3>
+      <h3>Phase 5: Small Model Error Analysis</h3>
       <ul>
-        <li>xyz</li>
+        <li>TODO</li>
       </ul>
-      <h3>Phase 6 (Router Training & Evaluation):</h3>
+      <h3>Phase 6: Router Training & Evaluation</h3>
       <ul>
-        <li>xyz</li>
+        <li>TODO</li>
       </ul>
 
       <p>
