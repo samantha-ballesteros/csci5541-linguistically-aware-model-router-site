@@ -980,3 +980,24 @@ caption {
 .eda-figures * {
   max-width: 80vw;
 }
+
+.complete,
+.in-progress,
+.not-started {
+  padding: 0 0.5em;
+}
+
+.complete {
+  color: green;
+  background-color: lightgreen;
+}
+
+.in-progress {
+  color: darkgoldenrod;
+  background-color: rgb(255, 255, 149);
+}
+
+.not-started {
+  color: darkred;
+  background-color: lightcoral;
+}
