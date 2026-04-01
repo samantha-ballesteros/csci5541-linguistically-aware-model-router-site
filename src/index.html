@@ -35,8 +35,7 @@
         <div class="authors-wrapper">
           <div class="author-container">
             <div class="author-image">
-              <!-- TODO -->
-              <img src="" />
+              <img src="./img/headshots/tejeshwini-headshot.jpeg" />
             </div>
             <p>Tejeshwini Ramesh Subasri</p>
           </div>
@@ -127,12 +126,13 @@
         a sample as either best suited for the small model or the large model.
       </p>
       <p>
-        <!-- TODO: please review :) -->
         <strong>Preliminary Results:</strong>
-        Thus far, we have found that the small model is performing well at the
-        task of classifying the Financial PhraseBank dataset. Additionally, the
-        text in the dataset has relatively low complexity scores. This project
-        would benefit highly from additional, more complex samples.
+        On the PhraseBank-only test set, the fine-tuned DistilBERT achieves
+        94.02% accuracy (macro-F1 0.9206), nearly matching FinBERT's zero-shot
+        94.59%. On the harder combined dataset (PhraseBank + Financial Tweets,
+        ~41k samples), the fine-tuned DistilBERT achieves 82.79% accuracy
+        (macro-F1 0.8196), providing a meaningful gap for the large model and
+        router to close.
       </p>
 
       <hr />
@@ -140,17 +140,16 @@
       <h2 id="teaser">Model Router Flow Chart</h2>
 
       <p>
-        A figure that conveys the main idea behind the project or the main
-        application being addressed. This figure is from
-        <a href="https://arxiv.org/pdf/2210.07469">StyLEx</a>.
+        The diagram below illustrates the routing flow: each input is first
+        processed by the small model (DistilBERT). The router then examines
+        the small model's confidence and the input's linguistic features to
+        decide whether to accept the small model's prediction or escalate to
+        the large model (RoBERTa-large).
       </p>
 
       <p class="sys-img">
         <img src="./img/flowchart.png" alt="Flowchart of model router system" />
       </p>
-
-      <!-- TODO -->
-      <p>If you need to explain more about your figure</p>
 
       <hr />
 
@@ -167,7 +166,7 @@
         whether text such as news articles, earnings calls, and financial
         reports carry a positive, negative, or neutral message. Big, powerful AI
         models do this well but are slow and expensive to run on thousands of
-        documents. Small, cheap models are fast but make can make more mistakes
+        documents. Small, cheap models are fast but can make more mistakes
         on difficult sentences. Our goal was to create a router that is trained
         to determine whether to send the text to the smaller model or the larger
         model, balancing cost and performance based on confidence and linguistic
@@ -212,8 +211,10 @@
       <p>
         This domain-specific model router is naturally applicable to financial
         firms or any organization seeking to perform financial sentiment
-        analysis at scale both accurately and efficiently.
-        <!-- TODO: complete this -->
+        analysis at scale both accurately and efficiently. A successful router
+        would allow practitioners to obtain near-large-model accuracy at a
+        fraction of the cost, making high-quality sentiment analysis accessible
+        even under tight computational budgets.
       </p>
 
       <hr />
@@ -277,7 +278,29 @@
         Phase 3: Small Model Finetuning - <span class="complete">Complete</span>
       </h3>
       <ul>
-        <li>TODO</li>
+        <li>
+          Established baselines by running zero-shot inference with
+          <code>distilbert-base-uncased</code> (untrained 3-class head) and
+          <code>ProsusAI/finbert</code> (pre-trained financial sentiment model)
+          on both the PhraseBank-only and combined test sets.
+        </li>
+        <li>
+          Fine-tuned <code>distilbert-base-uncased</code> with a 3-class
+          classification head on the training split using HuggingFace Trainer
+          (lr&nbsp;=&nbsp;2e-5, batch&nbsp;size&nbsp;=&nbsp;16,
+          max&nbsp;epochs&nbsp;=&nbsp;5, weight&nbsp;decay&nbsp;=&nbsp;0.01,
+          warmup&nbsp;ratio&nbsp;=&nbsp;0.1, early-stopping&nbsp;patience&nbsp;=&nbsp;2).
+          Best checkpoint selected by macro-F1 on the validation set.
+        </li>
+        <li>
+          Saved per-example predictions (label, class probabilities,
+          confidence, entropy, margin) for downstream error analysis and
+          router training.
+        </li>
+        <li>
+          Confusion matrices and per-class reports:
+          <a href="./html/small_model_results.html">figures found here</a>
+        </li>
       </ul>
       <h3>
         Phase 4: Large Model Finetuning - <span class="complete">Complete</span>
@@ -286,18 +309,30 @@
         <li>TODO</li>
       </ul>
       <h3>
-        Phase 5: Small Model Error Analysis
+        Phase 5: Small Model Error Analysis -
         <span class="in-progress">In Progress</span>
       </h3>
       <ul>
-        <li>TODO</li>
+        <li>
+          Analyze correlation between linguistic features and small-model
+          errors to produce error-analysis tables (e.g., error rate by
+          complexity bucket, negation presence, hedge density).
+        </li>
       </ul>
       <h3>
         Phase 6: Router Training & Evaluation -
         <span class="not-started">Not Started</span>
       </h3>
       <ul>
-        <li>TODO</li>
+        <li>
+          Build a router (logistic regression or simple classifier) that
+          decides, per sample, whether to route to the small or large model.
+        </li>
+        <li>Simulate routing decisions on the test set.</li>
+        <li>
+          Compute final metrics: overall accuracy, and
+          large-model usage rate.
+        </li>
       </ul>
 
       <p>
@@ -310,18 +345,18 @@
       <p>
         The dataset we originally intended to use was Financial PhraseBank in
         isolation. We suspected that it might be too small, and this was
-        confirmed when we began to finetune DistilBERT on the dataset. We
-        achieved an accuracy of 97%, which left little to no room for
-        improvement with RoBERT-a. To mitigate this, we found another dataset,
-        Financial Tweets Sentiment, which combines other reputable financial
-        sentiment datasets for a total of ~41k samples.
+        confirmed when we fine-tuned DistilBERT on the dataset and achieved
+        94.02% accuracy on the test set, which left little room for
+        improvement with RoBERTa-large. To mitigate this, we found another
+        dataset, Financial Tweets Sentiment, which combines other reputable
+        financial sentiment datasets for a total of ~41k samples. On this
+        combined dataset, the fine-tuned DistilBERT achieves 82.79% accuracy,
+        providing a meaningful gap for the large model and router to close.
       </p>
 
       <hr />
 
       <h2 id="results">Results</h2>
-
-      <!-- TODO: Complete prelim results -->
 
       <p>
         <b
@@ -343,11 +378,92 @@
         have an accuracy gap recovery of at least 0.9 (achieving at least 90% of
         the large model's performance).
       </p>
+
+      <h3>Small-Model Baselines &mdash; PhraseBank Only (test, n&nbsp;=&nbsp;518)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: center"><strong>Model</strong></th>
+            <th style="text-align: center">Accuracy</th>
+            <th style="text-align: center">Macro-F1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center">DistilBERT zero-shot</td>
+            <td style="text-align: center">0.2239</td>
+            <td style="text-align: center">0.1732</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">FinBERT zero-shot</td>
+            <td style="text-align: center">0.9459</td>
+            <td style="text-align: center">0.9346</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <strong>DistilBERT fine-tuned</strong>
+            </td>
+            <td style="text-align: center"><strong>0.9402</strong></td>
+            <td style="text-align: center"><strong>0.9206</strong></td>
+          </tr>
+        </tbody>
+        <caption>
+          Table 1. Small-Model Baselines &mdash; PhraseBank Only
+        </caption>
+      </table>
+
+      <h3>Small-Model Baselines &mdash; Combined Dataset (test, n&nbsp;=&nbsp;6,223)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: center"><strong>Model</strong></th>
+            <th style="text-align: center">Accuracy</th>
+            <th style="text-align: center">Macro-F1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center">DistilBERT zero-shot</td>
+            <td style="text-align: center">0.4358</td>
+            <td style="text-align: center">0.2136</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">FinBERT zero-shot</td>
+            <td style="text-align: center">0.5015</td>
+            <td style="text-align: center">0.4950</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <strong>DistilBERT fine-tuned</strong>
+            </td>
+            <td style="text-align: center"><strong>0.8279</strong></td>
+            <td style="text-align: center"><strong>0.8196</strong></td>
+          </tr>
+        </tbody>
+        <caption>
+          Table 2. Small-Model Baselines &mdash; Combined Dataset
+        </caption>
+      </table>
+
+      <p>
+        Detailed confusion matrices and per-class classification reports for
+        all of the above experiments (both datasets, validation and test splits)
+        can be found on the
+        <a href="./html/small_model_results.html"
+          >small model results page</a
+        >.
+      </p>
+
+      <h3>Router Experiment Results</h3>
+
       <table>
         <thead>
           <tr>
             <th style="text-align: center"><strong>Experiment</strong></th>
             <th style="text-align: center">Accuracy</th>
+            <th style="text-align: center">Macro-F1</th>
             <th style="text-align: center">Escalation Rate</th>
             <th style="text-align: center">Average Latency</th>
           </tr>
@@ -355,25 +471,27 @@
         <tbody>
           <tr>
             <td style="text-align: center">
-              <strong>DistilBERT (small model)</strong>
+              <strong>DistilBERT fine-tuned (small)</strong>
             </td>
-            <!-- TODO -->
-            <td style="text-align: center">TBD</td>
+            <td style="text-align: center">0.8279</td>
+            <td style="text-align: center">0.8196</td>
             <td style="text-align: center">0%</td>
-            <td style="text-align: center">TBD</td>
+            <td style="text-align: center">100%</td>
           </tr>
           <tr>
             <td style="text-align: center">
-              <strong>RoBERTa-large (large model)</strong>
+              <strong>RoBERTa-large (large)</strong>
             </td>
             <td style="text-align: center">TBD</td>
-            <td style="text-align: center">100%</td>
             <td style="text-align: center">TBD</td>
+            <td style="text-align: center">100%</td>
+            <td style="text-align: center">0%</td>
           </tr>
           <tr>
             <td style="text-align: center">
               <strong>Confidence-based router</strong>
             </td>
+            <td style="text-align: center">TBD</td>
             <td style="text-align: center">TBD</td>
             <td style="text-align: center">TBD</td>
             <td style="text-align: center">TBD</td>
@@ -385,23 +503,17 @@
             <td style="text-align: center">TBD</td>
             <td style="text-align: center">TBD</td>
             <td style="text-align: center">TBD</td>
+            <td style="text-align: center">TBD</td>
           </tr>
         </tbody>
         <caption>
-          Table 1. Experiment Results
+          Table 3. Router Experiment Results (combined test set)
         </caption>
       </table>
-      <br />
-      <div style="text-align: center">
-        <img style="height: 300px" alt="" src="./files/results.png" />
-      </div>
-      <br /><br />
 
       <hr />
 
-      <h2 id="conclusion">Conclustion and Future Work</h2>
-
-      <!-- TODO: complete -->
+      <h2 id="conclusion">Conclusion and Future Work</h2>
 
       <p>
         <strong>
