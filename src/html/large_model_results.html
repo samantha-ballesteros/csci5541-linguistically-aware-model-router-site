@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Large Model Results | TrustTheTokens
+    </title>
+
+    <link rel="stylesheet" href="../css/bulma.min.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" />
+    <link href="../css/css2" rel="stylesheet" />
+    <link href="../css/css" rel="stylesheet" />
+
+    <base href="." target="_blank" />
+  </head>
+
+  <body>
+    <div>
+      <div class="wrapper">
+        <h1 style="font-family: 'Lato', sans-serif;">
+          Linguistically Aware Model Routing for Financial Sentiment Analysis
+        </h1>
+        <h4 style="font-family: 'Lato', sans-serif;">
+          Spring 2026 CSCI 5541 NLP: Class Project - University of Minnesota
+        </h4>
+        <h4 style="font-family: 'Lato', sans-serif;">
+          TrustTheTokens
+        </h4>
+
+        <hr />
+
+        <h2>Large Model (RoBERTa-large) Results</h2>
+
+        <!-- ============================================ -->
+        <h3>1. Baseline RoBERTa-large (Zero-Shot) &mdash; PhraseBank (Test)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/baseline_roberta_phrasebank_test_confusion_matrix.png" alt="Baseline RoBERTa-large — PhraseBank confusion matrix"/>
+          <img src="../img/large_model/baseline_roberta_phrasebank_report.png" alt="Baseline RoBERTa-large — PhraseBank per-class report" />
+        </div>
+
+        <hr />
+
+        <!-- ============================================ -->
+        <h3>2. Baseline RoBERTa-large (Zero-Shot) &mdash; Combined (Test)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/baseline_roberta_combined_test_confusion_matrix.png" alt="Baseline RoBERTa-large — Combined confusion matrix"/>
+          <img src="../img/large_model/baseline_roberta_combined_report.jpeg" alt="Baseline RoBERTa-large — Combined per-class report" />
+        </div>
+
+        <hr />
+
+
+        <!-- ============================================ -->
+        <h3>5. Fine-Tuned RoBERTa-large &mdash; PhraseBank (Validation)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/finetuned_roberta_phrasebank_cm_val.png" alt="Fine-tuned RoBERTa-large — PhraseBank validation confusion matrix" />
+          <img src="../img/large_model/finetuned_roberta_phrasebank_report_val.png" alt="Fine-tuned RoBERTa-large — PhraseBank validation per-class report" />
+        </div>
+
+        <hr />
+
+        <h3>5. Fine-Tuned RoBERTa-large &mdash; PhraseBank (Test)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/finetuned_roberta_phrasebank_cm_test.png" alt="Fine-tuned RoBERTa-large — PhraseBank test confusion matrix" />
+          <img src="../img/large_model/finetuned_roberta_phrasebank_report_test.png" alt="Fine-tuned RoBERTa-large — PhraseBank test per-class report" />
+        </div>
+
+        <hr />
+
+
+        <!-- ============================================ -->
+        <h3>7. Fine-Tuned RoBERTa-large &mdash; Combined Dataset (Validation)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/finetuned_roberta_combined_cm_val.png" alt="Fine-tuned RoBERTa-large — Combined validation confusion matrix" />
+          <img src="../img/large_model/finetuned_roberta_combined_report_val.png" alt="Fine-tuned RoBERTa-large — Combined validation per-class report" />
+        </div>
+
+        <hr />
+
+        <!-- ============================================ -->
+        <h3>8. Fine-Tuned RoBERTa-large &mdash; Combined Dataset (Test)</h3>
+        <div class="large-model-figures">
+          <img src="../img/large_model/finetuned_roberta_combined_cm_test.png" alt="Fine-tuned RoBERTa-large — Combined test confusion matrix" />
+          <img src="../img/large_model/finetuned_roberta_combined_report_test.png" alt="Fine-tuned RoBERTa-large — Combined test per-class report" />
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>

@@ -980,6 +980,32 @@ caption {
 .eda-figures * {
   max-width: 80vw;
 }
+.large-model-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.large-model-figures img {
+  width: 48%;
+  max-width: 600px;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  padding: 8px;
+}
+
+@media (max-width: 900px) {
+  .large-model-figures img {
+    width: 100%;
+    max-width: 100%;
+  }
+}
 
 .complete,
 .in-progress,
