@@ -22,13 +22,13 @@
   <body>
     <div>
       <div class="wrapper">
-        <h1 style="font-family: &#39;Lato&#39;, sans-serif;">
+        <h1 style="font-family: Lato, sans-serif;">
           Linguistically Aware Model Routing for Financial Sentiment Analysis
         </h1>
-        <h4 style="font-family: &#39;Lato&#39;, sans-serif; ">
+        <h4 style="font-family: Lato, sans-serif; ">
           Spring 2026 CSCI 5541 NLP: Class Project - University of Minnesota
         </h4>
-        <h4 style="font-family: &#39;Lato&#39;, sans-serif; ">
+        <h4 style="font-family: Lato, sans-serif; ">
           TrustTheTokens
         </h4>
 
@@ -42,7 +42,7 @@
 
           <div class="author-container">
             <div class="author-image">
-              <!-- TODO -->
+              <img src="./img/headshots/hemapoojitha-headshot.jpg" />
               <img src="" />
             </div>
             <p>Hema Poojitha Chandu</p>
@@ -132,7 +132,7 @@
         94.59%. On the harder combined dataset (PhraseBank + Financial Tweets,
         ~41k samples), the fine-tuned DistilBERT achieves 82.79% accuracy
         (macro-F1 0.8196), providing a meaningful gap for the large model and
-        router to close.
+        router to close. Building on this, fine-tuning RoBERTa-large on the combined dataset resulted in 87.64% accuracy indicating strong performance on more diverse financial text.
       </p>
 
       <hr />
@@ -302,11 +302,22 @@
           <a href="./html/small_model_results.html">figures found here</a>
         </li>
       </ul>
-      <h3>
+      <!-- <h3>
         Phase 4: Large Model Finetuning - <span class="complete">Complete</span>
       </h3>
       <ul>
         <li>TODO</li>
+      </ul> -->
+      <h3>Phase 4: Large Model Finetuning - Complete</h3>
+      <ul>
+        <li>Established large-model baseline by evaluating zero-shot <code>roberta-large-mnli</code> on both the PhraseBank-only and combined test sets.</li>
+        <li>Fine-tuned <code>roberta-large</code> with a 3-class classification head on the PhraseBank split and the combined dataset using HuggingFace Trainer.</li>
+        <li>Tested the PhraseBank-trained RoBERTa-large on the combined test set to measure cross-dataset generalization and observed a substantial domain-shift drop in performance (accuracy = 0.5358, macro-F1 = 0.5388).</li>
+        <li>Fine-tuned RoBERTa-large directly on the combined dataset, achieving validation accuracy 0.8735 (macro-F1 0.8657) and test accuracy 0.8764 (macro-F1 0.8697).</li>
+        <li>Saved per-example predictions, class probabilities, confidence, entropy, and margin for downstream comparison with the small model and future router training.</li>
+        <li>Confusion matrices and per-class reports: 
+          <a href="./html/large_model_results.html">figures found here</a>
+        </li>
       </ul>
       <h3>
         Phase 5: Small Model Error Analysis -
@@ -352,6 +363,8 @@
         financial sentiment datasets for a total of ~41k samples. On this
         combined dataset, the fine-tuned DistilBERT achieves 82.79% accuracy,
         providing a meaningful gap for the large model and router to close.
+  
+        We also observed that a RoBERTa‑large model trained only on PhraseBank failed to generalize to the combined dataset, achieving just 53.58% accuracy on the combined test set. This confirmed that the expanded corpus introduces a substantial domain shift and motivated us to train the large model directly on the combined data.
       </p>
 
       <hr />
@@ -456,6 +469,54 @@
         >.
       </p>
 
+      <h3>Large-Model Results &mdash; PhraseBank Only (test, n&nbsp;=&nbsp;518) &mdash; Combined Dataset (test, n&nbsp;=&nbsp;6,223)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: center"><strong>Model</strong></th>
+            <th style="text-align: center">Accuracy</th>
+            <th style="text-align: center">Macro-F1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center">Roberta-large-mnli zero-shot (PhraseBank)</td>
+            <td style="text-align: center">0.5792</td>
+            <td style="text-align: center">0.5825</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">Roberta-large-mnli zero-shot (Combined)</td>
+            <td style="text-align: center">0.5751</td>
+            <td style="text-align: center">0.5376</td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <strong>RoBERTa-large fine-tuned </strong> (PhraseBank)
+            </td>
+            <td style="text-align: center"><strong>0.9614</strong></td>
+            <td style="text-align: center"><strong>0.9446</strong></td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <strong>RoBERTa-large fine-tuned </strong> (Combined)
+            </td>
+            <td style="text-align: center"><strong>0.8764</strong></td>
+            <td style="text-align: center"><strong>0.8697</strong></td>
+          </tr>
+        </tbody>
+        <caption>
+          Table 2. Large-Model Results 
+        </caption>
+      </table>
+      <p>
+        Detailed confusion matrices and per-class classification reports for
+        all large-model experiments (across both datasets and splits)
+        can be found on the
+        <a href="./html/large_model_results.html">
+          large model results page
+        </a>.
+      </p>
       <h3>Router Experiment Results</h3>
 
       <table>
@@ -482,8 +543,8 @@
             <td style="text-align: center">
               <strong>RoBERTa-large (large)</strong>
             </td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
+            <td style="text-align: center">0.8764</td>
+            <td style="text-align: center">0.8697</td>
             <td style="text-align: center">100%</td>
             <td style="text-align: center">0%</td>
           </tr>
