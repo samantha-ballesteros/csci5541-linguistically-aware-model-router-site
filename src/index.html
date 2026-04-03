@@ -121,9 +121,7 @@
         >
         from Hugging Face), extracted linguistic features from each sample, and
         have finetuned a "small" LM (DistilBERT) and a "large" LM
-        (RoBERTa-large). Next, we will perform an error analysis on the small LM
-        outputs. Finally, we will train a classifier (the model router) to label
-        a sample as either best suited for the small model or the large model.
+        (RoBERTa-large). Next, we will perform an error analysis on the small LM outputs. Based on this, we will train a classifier (the model router) that first processes every sample through the small model and then decides whether to escalate the sample to the large model based on the small model’s confidence and linguistic features.
       </p>
       <p>
         <strong>Preliminary Results:</strong>
@@ -167,10 +165,7 @@
         reports carry a positive, negative, or neutral message. Big, powerful AI
         models do this well but are slow and expensive to run on thousands of
         documents. Small, cheap models are fast but can make more mistakes
-        on difficult sentences. Our goal was to create a router that is trained
-        to determine whether to send the text to the smaller model or the larger
-        model, balancing cost and performance based on confidence and linguistic
-        elements (average word length, negation terms like "not", etc.).
+        on difficult sentences. Our goal was to create a router that, after processing input through the smaller model, determines whether the text should be escalated to the larger model. This decision is made by balancing cost and performance using the small model’s confidence score and linguistic features (e.g., average word length, presence of negation terms like "not", etc.).
       </p>
 
       <p>
@@ -330,8 +325,7 @@
       </h3>
       <ul>
         <li>
-          Build a router (logistic regression or simple classifier) that
-          decides, per sample, whether to route to the small or large model.
+          Build a router (logistic regression or simple classifier) that, for each sample, uses the small model’s output to decide whether the sample should be escalated to the large model.
         </li>
         <li>Simulate routing decisions on the test set.</li>
         <li>
@@ -568,16 +562,17 @@
 
       <hr />
 
-      <h2 id="feedback">Feedback</h2>
-
-      <p>
-        <strong>
-          Based on the mentor’s feedback, our project is currently going in the right direction, and no major changes are required at this stage.
-          Our next steps are clear, and we will proceed with steady progress toward completing the project by the end of the semester.</strong
-        >
-      </p>
-
-      <hr />
+    <h2 id="feedback">Feedback and Next Steps</h2>
+    
+    <p>
+      <strong>
+        Based on the mentor’s feedback, our project is currently going in the right direction, and no major changes are required at this stage.
+        Moving forward, we will experiment with even smaller models and compare their computational cost with larger models. We also plan to build a router that decides, for each sample, whether to escalate to a larger model based on linguistic features and the small model’s confidence score. Additionally, we will simulate routing decisions on the test set, compute final evaluation metrics, and prepare the project poster and report.
+        Overall, our next steps are clear, and we will continue making steady progress toward completing the project by the end of the semester.
+      </strong>
+    </p>
+    
+    <hr />
 
       <h2 id="conclusion">Conclusion and Future Work</h2>
 
