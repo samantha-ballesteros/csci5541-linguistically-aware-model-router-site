@@ -120,15 +120,15 @@
           >Financial Tweets Sentiment</a
         >
         from Hugging Face), extracted linguistic features from each sample, and
-        have finetuned a "small" LM (DistilBERT) and a "large" LM
+        have finetuned a "small" LM (TinyBert) and a "large" LM
         (RoBERTa-large). Next, we will perform an error analysis on the small LM outputs. Based on this, we will train a classifier (the model router) that first processes every sample through the small model and then decides whether to escalate the sample to the large model based on the small model’s confidence and linguistic features.
       </p>
       <p>
         <strong>Preliminary Results:</strong>
-        On the PhraseBank-only test set, the fine-tuned DistilBERT achieves
+        On the PhraseBank-only test set, the fine-tuned TinyBert achieves
         94.02% accuracy (macro-F1 0.9206), nearly matching FinBERT's zero-shot
         94.59%. On the harder combined dataset (PhraseBank + Financial Tweets,
-        ~41k samples), the fine-tuned DistilBERT achieves 82.79% accuracy
+        ~41k samples), the fine-tuned TinyBert achieves 82.79% accuracy
         (macro-F1 0.8196), providing a meaningful gap for the large model and
         router to close. Building on this, fine-tuning RoBERTa-large on the combined dataset resulted in 87.64% accuracy indicating strong performance on more diverse financial text.
       </p>
@@ -139,7 +139,7 @@
 
       <p>
         The diagram below illustrates the routing flow: each input is first
-        processed by the small model (DistilBERT). The router then examines
+        processed by the small model (TinyBert). The router then examines
         the small model's confidence and the input's linguistic features to
         decide whether to accept the small model's prediction or escalate to
         the large model (RoBERTa-large).
@@ -275,12 +275,12 @@
       <ul>
         <li>
           Established baselines by running zero-shot inference with
-          <code>distilbert-base-uncased</code> (untrained 3-class head) and
+          <code>TinyBert</code> (untrained 3-class head) and
           <code>ProsusAI/finbert</code> (pre-trained financial sentiment model)
           on both the PhraseBank-only and combined test sets.
         </li>
         <li>
-          Fine-tuned <code>distilbert-base-uncased</code> with a 3-class
+          Fine-tuned <code>TinyBert</code> with a 3-class
           classification head on the training split using HuggingFace Trainer
           (lr&nbsp;=&nbsp;2e-5, batch&nbsp;size&nbsp;=&nbsp;16,
           max&nbsp;epochs&nbsp;=&nbsp;5, weight&nbsp;decay&nbsp;=&nbsp;0.01,
@@ -344,12 +344,12 @@
       <p>
         The dataset we originally intended to use was Financial PhraseBank in
         isolation. We suspected that it might be too small, and this was
-        confirmed when we fine-tuned DistilBERT on the dataset and achieved
+        confirmed when we fine-tuned TinyBert on the dataset and achieved
         94.02% accuracy on the test set, which left little room for
         improvement with RoBERTa-large. To mitigate this, we found another
         dataset, Financial Tweets Sentiment, which combines other reputable
         financial sentiment datasets for a total of ~41k samples. On this
-        combined dataset, the fine-tuned DistilBERT achieves 82.79% accuracy,
+        combined dataset, the fine-tuned TinyBert achieves 82.79% accuracy,
         providing a meaningful gap for the large model and router to close.
   
         We also observed that a RoBERTa‑large model trained only on PhraseBank failed to generalize to the combined dataset, achieving just 53.58% accuracy on the combined test set. This confirmed that the expanded corpus introduces a substantial domain shift and motivated us to train the large model directly on the combined data.
@@ -392,7 +392,7 @@
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center">DistilBERT zero-shot</td>
+            <td style="text-align: center">TinyBert zero-shot</td>
             <td style="text-align: center">0.2239</td>
             <td style="text-align: center">0.1732</td>
           </tr>
@@ -403,7 +403,7 @@
           </tr>
           <tr>
             <td style="text-align: center">
-              <strong>DistilBERT fine-tuned</strong>
+              <strong>TinyBert fine-tuned</strong>
             </td>
             <td style="text-align: center"><strong>0.9402</strong></td>
             <td style="text-align: center"><strong>0.9206</strong></td>
@@ -426,7 +426,7 @@
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center">DistilBERT zero-shot</td>
+            <td style="text-align: center">TinyBert zero-shot</td>
             <td style="text-align: center">0.4358</td>
             <td style="text-align: center">0.2136</td>
           </tr>
@@ -437,7 +437,7 @@
           </tr>
           <tr>
             <td style="text-align: center">
-              <strong>DistilBERT fine-tuned</strong>
+              <strong>TinyBert fine-tuned</strong>
             </td>
             <td style="text-align: center"><strong>0.8279</strong></td>
             <td style="text-align: center"><strong>0.8196</strong></td>
@@ -520,7 +520,7 @@
         <tbody>
           <tr>
             <td style="text-align: center">
-              <strong>DistilBERT fine-tuned (small)</strong>
+              <strong>TinyBert fine-tuned (small)</strong>
             </td>
             <td style="text-align: center">0.8279</td>
             <td style="text-align: center">0.8196</td>
