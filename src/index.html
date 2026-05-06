@@ -137,10 +137,13 @@
         the large model (RoBERTa-large).
       </p>
 
-      <p class="sys-img">
-        <img src="./img/flowchart.png" alt="Flowchart of model router system" />
+      <p class="sys-img" style="text-align: center;">
+        <img
+          src="./img/flowchart.jpeg"
+          alt="Flowchart of model router system"
+          style="width: 50%; max-width: 700px; height: auto;"
+        />
       </p>
-
       <hr />
 
       <h2 id="introduction">Introduction / Background / Motivation</h2>
@@ -583,9 +586,26 @@
     </p>
      -->
 
+    <h2 id="Limitations">Limitations</h2>
+          <p>
+            The performance of this system is severely limited by the datasets used. 
+            During linguistic feature extraction, many features indicated the sentences 
+            were simple, and lacked the linguistic characteristics that were examined. 
+            This lack of complexity explains why there is a minimal gap in the small 
+            and large model’s performance, and the small model already has a relatively 
+            high accuracy on the dataset.
+           
+          </p>
 
-      <h2 id="conclusion">Conclusion and Future Work</h2>
+    <h2 id="conclusion">Conclusion and Future Work</h2>
+      <p>
+In this project, we developed a linguistically-aware routing framework for financial sentiment analysis that balances predictive performance and computational efficiency. Our results showed that the logistic regression router successfully combined uncertainty signals and linguistic complexity features to decide when inputs should be escalated from TinyBERT to RoBERTa-large.
+</p>
 
+
+      <p>
+      Overall, this work demonstrates that linguistically-aware routing can serve as an effective strategy for balancing predictive performance and computational efficiency in financial NLP systems. Future work could explore more complex financial documents, additional model architectures, calibrated uncertainty estimation, and multi-model routing strategies for further performance improvements.
+      </p>
       <!-- <p>
         <strong>
           How easily are your results able to be reproduced by others? Did your
@@ -598,7 +618,7 @@
       </p> -->
 
 
-      <p>
+      <!-- <p>
       In this project, we explored financial sentiment classification using a
       combination of small and large language models within a routing-based
       framework. Our results show that while smaller models provide efficient
@@ -615,7 +635,7 @@
       strategies that minimize large-model usage while maintaining high performance.
       Ultimately, we aim to develop a scalable and reliable
       framework that can be applied to real-world financial NLP applications.
-      </p>
+      </p> -->
 
 
       <hr />
