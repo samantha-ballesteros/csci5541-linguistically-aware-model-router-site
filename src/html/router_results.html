@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Router Results | TrustTheTokens</title>
+
+    <link rel="stylesheet" href="../css/bulma.min.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" />
+    <link href="../css/css2" rel="stylesheet" />
+    <link href="../css/css" rel="stylesheet" />
+
+    <base href="." target="_blank" />
+  </head>
+
+  <body>
+    <div>
+      <div class="wrapper">
+        <h1 style="font-family: 'Lato', sans-serif;">
+          Linguistically Aware Model Routing for Financial Sentiment Analysis
+        </h1>
+
+        <h4 style="font-family: 'Lato', sans-serif;">
+          Spring 2026 CSCI 5541 NLP: Class Project - University of Minnesota
+        </h4>
+
+        <h4 style="font-family: 'Lato', sans-serif;">
+          TrustTheTokens
+        </h4>
+
+        <hr />
+
+        <h2>Router Results</h2>
+
+        <p>
+          This page summarizes the final results of our linguistically-aware model router.
+          The router uses a logistic regression classifier to decide whether each input should
+          remain with the small TinyBERT model or be escalated to the larger RoBERTa-large model.
+        </p>
+
+        <p>
+          The router uses 17 features: 3 uncertainty features from the small model
+          and 14 linguistic complexity features extracted from the input text.
+        </p>
+
+        <hr />
+
+        <h3>1. Final Routing Strategy Comparison</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Accuracy</th>
+              <th>Weighted F1</th>
+              <th>Large-Model Usage</th>
+              <th>Avg Cost</th>
+              <th>Cost Reduction vs Large-Only</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Small Only (TinyBERT)</td>
+              <td>0.7964</td>
+              <td>0.7974</td>
+              <td>0.00%</td>
+              <td>1.00</td>
+              <td>96.00%</td>
+            </tr>
+
+            <tr>
+              <td>Large Only (RoBERTa-large)</td>
+              <td>0.8764</td>
+              <td>0.8763</td>
+              <td>100.00%</td>
+              <td>25.00</td>
+              <td>0.00%</td>
+            </tr>
+
+            <tr>
+              <td><strong>Router (Logistic Regression)</strong></td>
+              <td><strong>0.8596</strong></td>
+              <td><strong>0.8595</strong></td>
+              <td><strong>33.68%</strong></td>
+              <td><strong>9.08</strong></td>
+              <td><strong>63.67%</strong></td>
+            </tr>
+
+            <tr>
+              <td>Oracle Upper Bound</td>
+              <td>0.9197</td>
+              <td>0.9197</td>
+              <td>12.33%</td>
+              <td>3.96</td>
+              <td>84.17%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          The router improves substantially over the small-only model while avoiding the full
+          cost of always using RoBERTa-large. It achieves 0.8596 accuracy and 0.8595 weighted
+          F1 while sending only 33.68% of inputs to the large model.
+        </p>
+        <p>
+        The oracle upper bound demonstrates that further improvements are still possible
+        with better escalation decisions and more complex financial text.
+        </p>
+
+        <hr />
+
+        <h3>2. Cost-Accuracy Trade-off</h3>
+
+        <p>
+          This plot compares the accuracy and average cost of the small-only, large-only, and
+          router strategies. The router provides a practical middle point between
+          the low-cost small model and the high-cost large model.
+        </p>
+
+        <div class="large-model-figures">
+          <img
+            src="../img/router/cost_accuracy_tradeoff.png"
+            alt="Cost vs accuracy trade-off for routing strategies"
+          />
+        </div>
+
+        <hr />
+
+        <h3>3. Router Feature Importance</h3>
+
+        <p>
+        The feature-based analysis of routing decisions shows that the router relies on
+        both uncertainty signals and linguistic complexity features when deciding whether
+        to escalate an input. Linguistic features help capture structural complexity that
+        is not fully reflected by model uncertainty alone.
+        </p>
+
+        <div class="large-model-figures">
+          <img
+            src="../img/router/feature_importance.png"
+            alt="Router feature importance plot"
+          />
+        </div>
+
+        <hr />
+
+        <!-- ============================================ -->
+        <h3>4. Logistic Regression Router &mdash; Validation Performance</h3>
+          <p>
+          Final validation performance for the best-performing router selected
+          using weighted F1-score on the validation set.
+        </p>
+
+        <div class="large-model-figures">
+          <img
+            src="../img/router/LR_train_confusion_matrix_val.png"
+            alt="Logistic Regression Router validation confusion matrix"
+          />
+        </div>
+
+        <div class="large-model-figures">
+          <img
+            src="../img/router/best_router_by_f1_and_on_val-LR.png"
+            alt="Best router validation results"
+          />
+        </div>
+      
+        <hr />
+        <h3>5. Best Router (Logistic Regression) &mdash; Test Performance</h3>
+        <p>Final test-set performance of the linguistically-aware logistic regression router
+        for financial sentiment analysis.</p>
+        <div class="large-model-figures">
+          <img
+            src="../img/router/Routed_system_confusion_matrix_test.png"
+            alt="Logistic Regression Router validation confusion matrix"
+          />
+        </div>
+
+        <div class="large-model-figures">
+          <img
+            src="../img/router/Routed_system_per_class_report_test.png"
+            alt="Best router validation results"
+          />
+        </div>
+         
+        <hr />
+
+        <p>
+          <a href="../index.html">Back to main project page</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
