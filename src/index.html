@@ -100,46 +100,38 @@
     <div class="wrapper">
       <hr />
 
-      <h2 id="abstract">Abstract</h2>
+    <h2 id="abstract">Abstract</h2>
 
       <p>
-        <strong>Motivation:</strong>
-        The objective of this project is to create a model router for financial
-        text (specifically sentiment analysis) in order to balance tradeoffs in
-        accuracy and computational/monetary efficiency between small and larger
-        language models (LMs).
+      Financial institutions increasingly rely on natural language processing (NLP) systems to analyze large volumes of financial text such as earnings calls, disclosures, analyst reports, and financial news. While large transformer models achieve strong sentiment classification performance, deploying them for every input is computationally expensive. Smaller models are faster and cheaper, but they often struggle with linguistically complex financial text containing hedging, negation, implicit sentiment, and domain-specific terminology.
       </p>
+
       <p>
-        <strong>Approach:</strong>
-        To accomplish this, we have cleaned a dataset (<a
-          href="https://huggingface.co/datasets/takala/financial_phrasebank/tree/main/data"
-          >Financial PhraseBank</a
-        >, and
-        <a
-          href="https://huggingface.co/datasets/TimKoornstra/financial-tweets-sentiment"
-          >Financial Tweets Sentiment</a
-        >
-        from Hugging Face), extracted linguistic features from each sample, and
-        have finetuned a "small" LM (TinyBert) and a "large" LM
-        (RoBERTa-large). Next, we will perform an error analysis on the small LM outputs. Based on this, we will train a classifier (the model router) that first processes every sample through the small model and then decides whether to escalate the sample to the large model based on the small model’s confidence and linguistic features.
+      <strong>Motivation:</strong>
+      The objective of this project is to design a routing framework for financial sentiment analysis that balances predictive performance with computational efficiency. Instead of relying entirely on a computationally expensive large model, the system selectively escalates only difficult financial inputs while allowing simpler inputs to be processed by a lightweight model.
       </p>
+
       <p>
-        <strong>Preliminary Results:</strong>
-        On the PhraseBank-only test set, the fine-tuned TinyBert achieves
-        94.02% accuracy (macro-F1 0.9206), nearly matching FinBERT's zero-shot
-        94.59%. On the harder combined dataset (PhraseBank + Financial Tweets,
-        ~41k samples), the fine-tuned TinyBert achieves 82.79% accuracy
-        (macro-F1 0.8196), providing a meaningful gap for the large model and
-        router to close. Building on this, fine-tuning RoBERTa-large on the combined dataset resulted in 87.64% accuracy indicating strong performance on more diverse financial text.
+      <strong>Approach:</strong>
+      We combined and cleaned multiple financial sentiment datasets (<a
+                href="https://huggingface.co/datasets/takala/financial_phrasebank/tree/main/data"
+                >Financial PhraseBank</a
+              >, and
+              <a
+                href="https://huggingface.co/datasets/TimKoornstra/financial-tweets-sentiment"
+                >Financial Tweets Sentiment</a
+              >
+              from Hugging Face), extracted linguistic complexity features from each sample, and fine-tuned both a small model (TinyBERT-4L-312D) and a large model (RoBERTa-large) for 3-class financial sentiment classification. We then extracted uncertainty signals from the small model, including confidence, entropy, and probability margins, and combined them with extracted linguistic features. These features were used to train a lightweight logistic regression router that determines whether an input should remain with the small model or be escalated to the large model.
       </p>
 
       <hr />
+
 
       <h2 id="teaser">Model Router Flow Chart</h2>
 
       <p>
         The diagram below illustrates the routing flow: each input is first
-        processed by the small model (TinyBert). The router then examines
+        processed by the small model (TinyBERT). The router then examines
         the small model's confidence and the input's linguistic features to
         decide whether to accept the small model's prediction or escalate to
         the large model (RoBERTa-large).
@@ -274,19 +266,21 @@
       </h3>
       <ul>
         <li>
-          Established baselines by running zero-shot inference with
-          <code>TinyBert</code> (untrained 3-class head) and
+          Established baseline performance using <code>TinyBERT-4L-312D</code> for 3-class financial sentiment classification on the combined test set and
           <code>ProsusAI/finbert</code> (pre-trained financial sentiment model)
           on both the PhraseBank-only and combined test sets.
         </li>
+      
         <li>
-          Fine-tuned <code>TinyBert</code> with a 3-class
-          classification head on the training split using HuggingFace Trainer
-          (lr&nbsp;=&nbsp;2e-5, batch&nbsp;size&nbsp;=&nbsp;16,
-          max&nbsp;epochs&nbsp;=&nbsp;5, weight&nbsp;decay&nbsp;=&nbsp;0.01,
-          warmup&nbsp;ratio&nbsp;=&nbsp;0.1, early-stopping&nbsp;patience&nbsp;=&nbsp;2).
-          Best checkpoint selected by macro-F1 on the validation set.
-        </li>
+        Fine-tuned <code>TinyBERT</code> with a 3-class classification head using the HuggingFace Trainer framework
+        (learning rate = 2e-5, batch size = 16, max epochs = 5, weight decay = 0.01,
+        warmup ratio = 0.1, early stopping patience = 2).
+        The best checkpoint was selected using validation macro-F1.
+      </li>
+       <li>
+    Evaluated model performance using accuracy, weighted F1-score, confusion matrices,
+    and per-class classification reports.
+  </li>
         <li>
           Saved per-example predictions (label, class probabilities,
           confidence, entropy, margin) for downstream error analysis and
@@ -308,7 +302,7 @@
           <a href="./html/large_model_results.html">figures found here</a>
         </li>
       </ul>
-      <h3>
+      <!-- <h3>
         Phase 5: Small Model Error Analysis -
         <span class="in-progress">In Progress</span>
       </h3>
@@ -332,9 +326,26 @@
           Compute final metrics: overall accuracy, and
           large-model usage rate.
         </li>
+      </ul> -->
+
+      <h3>Phase 5: Router Feature Construction & Error Analysis - <span class="complete">Complete</span></h3>
+      <ul>
+        <li>Compared small-model and large-model predictions to identify where escalation was useful.</li>
+        <li>Created oracle escalation labels: a sample was marked for escalation when RoBERTa-large was correct and TinyBERT was incorrect.</li>
+        <li>Extracted uncertainty signals from the small model: confidence, entropy, and probability margin.</li>
+        <li>Combined these uncertainty signals with linguistic features such as token count, character count, clause count, dependency depth, negation count, hedge count, readability, and passive voice count.</li>
+        <li>Used these features to build a 17-dimensional router input vector.</li>
       </ul>
 
-      <p>
+      <h3>Phase 6: Router Training & Evaluation - <span class="complete">Complete</span></h3>
+      <ul>
+        <li>Trained a lightweight <code>logistic regression</code> router to decide whether each input should remain with TinyBERT or be escalated to RoBERTa-large.</li>
+        <li>Evaluated the router against small-only, large-only, and oracle upper-bound baselines.</li>
+        <li>The router achieved 0.860 accuracy and 0.860 weighted F1 while using the large model only 33.7% of the time.</li>
+        <li>Compared to always using RoBERTa-large, the router reduced computational cost by 63.7%.</li>
+        <li>Final router plots and analysis can be found on the <a href="html/router_results.html">router results page</a>.</li>
+      </ul>
+            <p>
         <b
           >What problems did you anticipate? What problems did you encounter?
           Did the very first thing you tried work?</b
@@ -358,28 +369,11 @@
       <hr />
 
       <h2 id="results">Results</h2>
-
+      <p><b>How did you measure success? What experiments were used? What were the results, both quantitative and qualitative? Did you succeed? Did you fail? Why?</b></p>
       <p>
-        <b
-          >How did you measure success? What experiments were used? What were
-          the results, both quantitative and qualitative? Did you succeed? Did
-          you fail? Why?</b
-        >
+      We measured success by evaluating whether the router could improve over the small model while reducing the cost of always using the large model. The main experiments compared four strategies: Small Only, Large Only, Router, and Oracle Upper Bound. We used accuracy, weighted F1-score, large-model usage, average computational cost, and cost reduction as evaluation metrics.
       </p>
-
-      <p>
-        We will measure success with various metrics comparing the small model,
-        large model, purely confidence-based router, and the
-        linguistically-aware router (our solution). These metrics will include,
-        but are not limited to, accuracy, escalation rate (sent to large model),
-        and average latency.
-      </p>
-      <p>
-        The goal for accuracy would be to surpass that of the small model and to
-        have an accuracy gap recovery of at least 0.9 (achieving at least 90% of
-        the large model's performance).
-      </p>
-
+    
       <h3>Small-Model Baselines &mdash; PhraseBank Only (test, n&nbsp;=&nbsp;518)</h3>
 
       <table>
@@ -392,7 +386,7 @@
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center">TinyBert zero-shot</td>
+            <td style="text-align: center">DistilBERT zero-shot</td>
             <td style="text-align: center">0.2239</td>
             <td style="text-align: center">0.1732</td>
           </tr>
@@ -403,7 +397,7 @@
           </tr>
           <tr>
             <td style="text-align: center">
-              <strong>TinyBert fine-tuned</strong>
+              <strong>DistilBERT fine-tuned</strong>
             </td>
             <td style="text-align: center"><strong>0.9402</strong></td>
             <td style="text-align: center"><strong>0.9206</strong></td>
@@ -426,9 +420,9 @@
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center">TinyBert zero-shot</td>
-            <td style="text-align: center">0.4358</td>
-            <td style="text-align: center">0.2136</td>
+            <td style="text-align: center">TinyBERT zero-shot</td>
+            <td style="text-align: center">0.4504</td>
+            <td style="text-align: center">0.2458</td>
           </tr>
           <tr>
             <td style="text-align: center">FinBERT zero-shot</td>
@@ -437,10 +431,10 @@
           </tr>
           <tr>
             <td style="text-align: center">
-              <strong>TinyBert fine-tuned</strong>
+              <strong>TinyBERT fine-tuned</strong>
             </td>
-            <td style="text-align: center"><strong>0.8279</strong></td>
-            <td style="text-align: center"><strong>0.8196</strong></td>
+            <td style="text-align: center"><strong>0.7964</strong></td>
+            <td style="text-align: center"><strong>0.7862</strong></td>
           </tr>
         </tbody>
         <caption>
@@ -505,64 +499,80 @@
           large model results page
         </a>.
       </p>
+      
       <h3>Router Experiment Results</h3>
 
       <table>
         <thead>
           <tr>
-            <th style="text-align: center"><strong>Experiment</strong></th>
-            <th style="text-align: center">Accuracy</th>
-            <th style="text-align: center">Macro-F1</th>
-            <th style="text-align: center">Escalation Rate</th>
-            <th style="text-align: center">Average Latency</th>
+            <th>Strategy</th>
+            <th>Accuracy</th>
+            <th>Weighted F1</th>
+            <th>Large Model Usage</th>
+            <th>Average Cost</th>
+            <th>Cost Reduction</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center">
-              <strong>TinyBert fine-tuned (small)</strong>
-            </td>
-            <td style="text-align: center">0.8279</td>
-            <td style="text-align: center">0.8196</td>
-            <td style="text-align: center">0%</td>
-            <td style="text-align: center">100%</td>
+            <td>Small Only (TinyBERT)</td>
+            <td>0.796</td>
+            <td>0.797</td>
+            <td>0%</td>
+            <td>1.00</td>
+            <td>96.0%</td>
           </tr>
           <tr>
-            <td style="text-align: center">
-              <strong>RoBERTa-large (large)</strong>
-            </td>
-            <td style="text-align: center">0.8764</td>
-            <td style="text-align: center">0.8697</td>
-            <td style="text-align: center">100%</td>
-            <td style="text-align: center">0%</td>
+            <td>Large Only (RoBERTa-large)</td>
+            <td>0.876</td>
+            <td>0.876</td>
+            <td>100%</td>
+            <td>25.00</td>
+            <td>0.0%</td>
           </tr>
           <tr>
-            <td style="text-align: center">
-              <strong>Confidence-based router</strong>
-            </td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
+            <td>Linguistically-Aware Router (Logistic)</td>
+            <td>0.860</td>
+            <td>0.860</td>
+            <td>33.7%</td>
+            <td>9.08</td>
+            <td>63.7%</td>
           </tr>
           <tr>
-            <td style="text-align: center">
-              <strong>Linguistically-aware router</strong>
-            </td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
-            <td style="text-align: center">TBD</td>
+            <td>Oracle Upper Bound</td>
+            <td>0.920</td>
+            <td>0.920</td>
+            <td>12.3%</td>
+            <td>3.96</td>
+            <td>84.2%</td>
           </tr>
         </tbody>
         <caption>
           Table 3. Router Experiment Results (combined test set)
         </caption>
       </table>
+      <p>
+        Detailed router plots and analysis are available on the
+        <a href="html/router_results.html">router results page</a>.
+      </p>
+      <h3>Results Analysis</h3>
+      <p>
+      Quantitatively, the small model achieved 0.796 accuracy with the lowest cost. The large model achieved the highest standalone performance with 0.876 accuracy, but required using the large model for every input. Our router achieved 0.860 accuracy while using the large model only 33.7% of the time, reducing cost by 63.7% compared to always using the large model. The oracle upper bound reached 0.920 accuracy, showing that better routing decisions could still improve performance.
+      </p>
+
+      <p>
+      Qualitatively, the router succeeded in balancing accuracy and efficiency. Feature analysis showed that both uncertainty signals and linguistic features influenced escalation decisions. Character count, token count, readability, clause structure, syntactic depth, and entropy helped identify inputs that were more likely to need escalation.
+      </p>
+      <p>
+        Overall, the router achieves performance close to the large model while using RoBERTa-large for only about one-third of the test inputs.
+        This shows that linguistically-aware routing can retain most of the large model’s performance while significantly reducing computational cost.
+      </p>
+
+      
 
       <hr />
 
-    <h2 id="feedback">Feedback and Next Steps</h2>
+    <!-- <h2 id="feedback">Feedback and Next Steps</h2>
     
     <p>
       <strong>
@@ -571,8 +581,8 @@
         Overall, our next steps are clear, and we will continue making steady progress toward completing the project by the end of the semester.
       </strong>
     </p>
-    
-    <hr />
+     -->
+
 
       <h2 id="conclusion">Conclusion and Future Work</h2>
 
